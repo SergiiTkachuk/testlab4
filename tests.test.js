@@ -15,7 +15,7 @@ describe('TaskManager', () => {
   });
 
   describe('loadTasks', () => {
-    it('should load tasks from tasks.json file', () => {
+    test('should load tasks from tasks.json file', () => {
       // Записуємо масив задач у файл tasks.json
       const tasks = [
         {
@@ -42,7 +42,7 @@ describe('TaskManager', () => {
       expect(loadedTasks).toEqual(tasks);
     });
 
-    it('should return an empty array if tasks.json file does not exist', () => {
+    test('should return an empty array if tasks.json file does not exist', () => {
       // Видаляємо файл tasks.json, якщо він існує
       if (fs.existsSync('tasks.json')) {
         fs.unlinkSync('tasks.json');
@@ -55,7 +55,7 @@ describe('TaskManager', () => {
       expect(loadedTasks).toEqual([]);
     });
 
-    it('should return an empty array if an error occurs while reading tasks.json file', () => {
+    test('should return an empty array if an error occurs while reading tasks.json file', () => {
       // Симулюємо помилку під час читання файлу
       jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
         throw new Error('Mocked readFileSync error');
@@ -73,7 +73,7 @@ describe('TaskManager', () => {
   });
 
   describe('saveTasks', () => {
-    it('should save tasks to tasks.json file', () => {
+    test('should save tasks to tasks.json file', () => {
       // Додаємо задачу до TaskManager
       taskManager.addTask('Task 1', 'Description 1', '2023-05-20');
 
@@ -89,7 +89,7 @@ describe('TaskManager', () => {
   });
 
   describe('addTask', () => {
-    it('should add a new task to the tasks list', () => {
+    test('should add a new task to the tasks list', () => {
       // Додаємо нову задачу
       taskManager.addTask('Task 1', 'Description 1', '2023-05-20');
 
@@ -112,7 +112,7 @@ describe('TaskManager', () => {
   });
 
   describe('editTask', () => {
-    it('should edit the specified task', () => {
+    test('should edit the specified task', () => {
       // Додаємо задачу для редагування
       taskManager.addTask('Task 1', 'Description 1', '2023-05-20');
 
@@ -125,7 +125,7 @@ describe('TaskManager', () => {
       expect(taskManager.tasks[0].deadline).toBe('2023-05-25');
     });
 
-    it('should not modify the task if no new values are provided', () => {
+    test('should not modify the task if no new values are provided', () => {
       // Додаємо задачу для редагування
       taskManager.addTask('Task 1', 'Description 1', '2023-05-20');
 
@@ -138,13 +138,19 @@ describe('TaskManager', () => {
       expect(taskManager.tasks[0].deadline).toBe('2023-05-20');
     });
 
-    it('should display a message if the task is not found', () => {
+    test('should display a message if the task is not found', () => {
+      const consoleLogMock = jest.fn();
+      jest.spyOn(console, 'log').mockImplementation(consoleLogMock);
+    
       // Редагуємо неіснуючу задачу
       taskManager.editTask('nonexistentId', 'New Title', 'New Description', '2023-05-25');
-
-      // Перевіряємо, що виведено повідомлення про незнайдену задачу
-      expect(console.log).toHaveBeenCalledWith('Task not found.');
+    
+      // Перевіряємо, що функція-заглушка була викликана з очікуваними аргументами
+      expect(consoleLogMock).toHaveBeenCalledWith('Task not found.');
+    
+      console.log.mockRestore();
     });
+    
   });
 
   describe('completeTask', () => {
@@ -161,11 +167,14 @@ describe('TaskManager', () => {
     });
 
     it('should display a message if the task is not found', () => {
+      const consoleLogMock = jest.fn();
+      jest.spyOn(console, 'log').mockImplementation(consoleLogMock);
       // Позначаємо неіснуючу задачу як виконану
       taskManager.completeTask('nonexistentId');
 
       // Перевіряємо, що виведено повідомлення про незнайдену задачу
-      expect(console.log).toHaveBeenCalledWith('Task not found.');
+      expect(consoleLogMock).toHaveBeenCalledWith('Task not found.');
+      console.log.mockRestore();
     });
   });
 
@@ -182,11 +191,14 @@ describe('TaskManager', () => {
     });
 
     it('should display a message if the task is not found', () => {
+      const consoleLogMock = jest.fn();
+      jest.spyOn(console, 'log').mockImplementation(consoleLogMock);
       // Видаляємо неіснуючу задачу
       taskManager.deleteTask('nonexistentId');
 
       // Перевіряємо, що виведено повідомлення про незнайдену задачу
-      expect(console.log).toHaveBeenCalledWith('Task not found.');
+      expect(consoleLogMock).toHaveBeenCalledWith('Task not found.');
+      console.log.mockRestore();
     });
   });
 
