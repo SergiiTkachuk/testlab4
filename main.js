@@ -40,4 +40,18 @@ program
     taskManager.deleteTask(taskId);
   });
 
+program
+  .command('expired')
+  .description('Show expired tasks')
+  .action(() => {
+    taskManager.showExpiredTasks();
+  });
+
+  program
+  .command('pending')
+  .description('Show pending tasks sorted by deadline')
+  .action(() => {
+    taskManager.showPendingTasks();
+  });
+
 program.parse(process.argv);
