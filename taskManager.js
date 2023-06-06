@@ -1,4 +1,5 @@
 const fs = require('fs');
+const helpfulFunction = require('./function.js')
 
 class TaskManager {
    
@@ -47,6 +48,16 @@ class TaskManager {
    }
 
    addTask(title, description, deadline) {
+
+      if (typeof(deadline) !== 'undefined') {
+
+         if (!helpfulFunction.checkDate(deadline)) {
+
+            console.log('Incorrect date.');
+            return 1;
+   
+         }
+      }
       
       const task = {
          
@@ -65,6 +76,16 @@ class TaskManager {
    }
    
    editTask(taskId, title, description, deadline) {
+
+      if (typeof(deadline) !== 'undefined') {
+
+         if (!helpfulFunction.checkDate(deadline)) {
+
+            console.log('Incorrect date.');
+            return 1;
+   
+         }
+      }
       
       const task = this.findTaskById(taskId);
       
@@ -124,23 +145,28 @@ class TaskManager {
       const currentDate = new Date();
       const expiredTasks = this.tasks.filter((task) => !task.completed && task.deadline && new Date(task.deadline) < currentDate);
       
-      if (expiredTasks.length !== 0) {
-         
-         console.log('Expired tasks:');
-         
-         expiredTasks.forEach((task) => {
-            
-            console.log(`  ID: ${task.id}`);
-            console.log(`  Title: ${task.title}`);
-            console.log(`  Description: ${task.description}`);
-            console.log(`  Deadline: ${task.deadline}`);
-            console.log('----------------------------');
-         });
+      console.log('Expired tasks:');
+      
+      if (expiredTasks.length === 0) {
+
+         console.log('No expired tasks.');
+         return 1;
+
       }
+      
+      expiredTasks.forEach((task) => {
+         
+         console.log(`  ID: ${task.id}`);
+         console.log(`  Title: ${task.title}`);
+         console.log(`  Description: ${task.description}`);
+         console.log(`  Deadline: ${task.deadline}`);
+         console.log('----------------------------');
+      
+      });
    }
    
    showPendingTasks() {
-      
+
       const tasksWithDeadline = this.tasks.filter((task) => task.hasOwnProperty('deadline'));
       const pendingTasks = tasksWithDeadline.filter((task) => !task.completed);
       
