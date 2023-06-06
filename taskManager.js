@@ -15,8 +15,10 @@ class TaskManager {
   }
 
   saveTasks() {
-    fs.writeFileSync('tasks.json', JSON.stringify(this.tasks));
+    const jsonData = JSON.stringify(this.tasks, null, 2);
+    fs.writeFileSync('tasks.json', jsonData);
   }
+  
 
   listTasks() {
     console.log('All tasks:');
