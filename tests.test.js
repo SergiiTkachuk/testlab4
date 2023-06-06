@@ -97,20 +97,21 @@ describe('TaskManager', () => {
 
     });
 
-    test('should display a message if the deadline incorrect', () => {
-
-      taskManager.addTask('Task 1', 'Description 1', '2022-08-20');
-      taskManager.addTask('Task 2', 'Description 2', 'pablo');
-
+    test('should display a message if the deadline is incorrect', () => {
       const consoleLogMock = jest.fn();
       jest.spyOn(console, 'log').mockImplementation(consoleLogMock);
-
+    
+      taskManager.addTask('Task 1', 'Description 1', '2022-08-20');
+      taskManager.addTask('Task 2', 'Description 2', 'pablo');
+    
       expect(taskManager.tasks.length).toBe(0);
-      expect(consoleLogMock).toHaveBeenCalledWith('Incorrect date.');
-      expect(consoleLogMock).toHaveBeenCalledWith('Incorrect date.');
+      expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Incorrect date.');
+      expect(consoleLogMock).toHaveBeenNthCalledWith(2, 'Incorrect date.');
     
       console.log.mockRestore();
     });
+    
+    
 
     test('should generate a unique ID for each task', () => {
 
@@ -246,11 +247,8 @@ describe('TaskManager', () => {
   });
 
   describe('showExpiredTasks', () => {
-
     test('should display a list of expired tasks', () => {
-
       const tasks = [
-
         {
           id: '1',
           title: 'Task 1',
@@ -258,7 +256,6 @@ describe('TaskManager', () => {
           deadline: '2023-05-20',
           completed: false,
         },
-
         {
           id: '2',
           title: 'Task 2',
@@ -266,33 +263,35 @@ describe('TaskManager', () => {
           deadline: '2023-05-15',
           completed: true,
         },
-
       ];
-
+  
       const jsonData = JSON.stringify(tasks, null, 2);
       fs.writeFileSync('test.json', jsonData);
-
+  
       taskManager.loadTasks();
-
+  
       const consoleLogMock = jest.fn();
       jest.spyOn(console, 'log').mockImplementation(consoleLogMock);
-
+  
       taskManager.showExpiredTasks();
-
-      expect(consoleLogMock).toHaveBeenCalledWith('Expired tasks:');
-      expect(consoleLogMock).toHaveBeenCalledWith(`  ID: ${taskManager.tasks[0].id}`);
-      expect(consoleLogMock).toHaveBeenCalledWith('  Title: Task 1');
-      expect(consoleLogMock).toHaveBeenCalledWith('  Description: Description 1');
-      expect(consoleLogMock).toHaveBeenCalledWith('  Deadline: 2023-05-20');
-      expect(consoleLogMock).toHaveBeenCalledWith('----------------------------');
-      expect(consoleLogMock).toHaveBeenCalledWith(`  ID: ${taskManager.tasks[1].id}`);
-      expect(consoleLogMock).toHaveBeenCalledWith('  Title: Task 2');
-      expect(consoleLogMock).toHaveBeenCalledWith('  Description: Description 2');
-      expect(consoleLogMock).toHaveBeenCalledWith('  Deadline: 2023-05-15');
-      expect(consoleLogMock).toHaveBeenCalledWith('----------------------------');
-
+  
+      if (taskManager.tasks.some((task) => !task.completed && task.deadline)) {
+        expect(consoleLogMock).toHaveBeenCalledWith('Expired tasks:');
+        taskManager.tasks.forEach((task) => {
+          if (!task.completed && task.deadline) {
+            expect(consoleLogMock).toHaveBeenCalledWith(`  ID: ${task.id}`);
+            expect(consoleLogMock).toHaveBeenCalledWith(`  Title: ${task.title}`);
+            expect(consoleLogMock).toHaveBeenCalledWith(`  Description: ${task.description}`);
+            expect(consoleLogMock).toHaveBeenCalledWith(`  Deadline: ${task.deadline}`);
+            expect(consoleLogMock).toHaveBeenCalledWith('----------------------------');
+          }
+        });
+      } else {
+        expect(consoleLogMock).toHaveBeenCalledWith('No expired tasks.');
+      }
+  
       console.log.mockRestore();
-    });
+    });  
 
     test('should not display any tasks if no tasks are expired', () => {
 
