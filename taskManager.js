@@ -1,13 +1,14 @@
 const fs = require('fs');
 
 class TaskManager {
-  constructor() {
-    this.tasks = this.loadTasks();
+  constructor(fileName) {
+   this.fileName = fileName
+   this.tasks = this.loadTasks(); 
   }
 
   loadTasks() {
     try {
-      const data = fs.readFileSync('tasks.json');
+      const data = fs.readFileSync(`${this.fileName}`);
       return JSON.parse(data);
     } catch (error) {
       return [];
@@ -16,7 +17,7 @@ class TaskManager {
 
   saveTasks() {
     const jsonData = JSON.stringify(this.tasks, null, 2);
-    fs.writeFileSync('tasks.json', jsonData);
+    fs.writeFileSync(`${this.fileName}`, jsonData);
   }
   
 

@@ -1,7 +1,7 @@
 const { program } = require('commander');
 const TaskManager = require('./taskManager');
 
-const taskManager = new TaskManager();
+const taskManager = new TaskManager('tasks.json');
 
 program.version('1.0.0').description('Task Tracker');
 
