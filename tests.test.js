@@ -6,17 +6,17 @@ describe('TaskManager', () => {
 
   beforeEach(() => {
     // Перед кожним тестом створюємо новий екземпляр TaskManager
-    taskManager = new TaskManager();
+    taskManager = new TaskManager('test.json');
   });
 
   afterEach(() => {
     // Після кожного тесту очищаємо дані
-    fs.writeFileSync('tasks.json', '[]');
+    fs.writeFileSync('test.json', '[]');
   });
 
   describe('loadTasks', () => {
-    test('should load tasks from tasks.json file', () => {
-      // Записуємо масив задач у файл tasks.json
+    test('should load tasks from test.json file', () => {
+      // Записуємо масив задач у файл test.json
       const tasks = [
         {
           id: '1',
@@ -33,7 +33,7 @@ describe('TaskManager', () => {
           completed: true,
         },
       ];
-      fs.writeFileSync('tasks.json', JSON.stringify(tasks));
+      fs.writeFileSync('test.json', JSON.stringify(tasks));
 
       // Завантажуємо задачі з файлу
       const loadedTasks = taskManager.loadTasks();
@@ -42,10 +42,10 @@ describe('TaskManager', () => {
       expect(loadedTasks).toEqual(tasks);
     });
 
-    test('should return an empty array if tasks.json file does not exist', () => {
-      // Видаляємо файл tasks.json, якщо він існує
-      if (fs.existsSync('tasks.json')) {
-        fs.unlinkSync('tasks.json');
+    test('should return an empty array if test.json file does not exist', () => {
+      // Видаляємо файл test.json, якщо він існує
+      if (fs.existsSync('test.json')) {
+        fs.unlinkSync('test.json');
       }
 
       // Завантажуємо задачі з неіснуючого файлу
@@ -55,7 +55,7 @@ describe('TaskManager', () => {
       expect(loadedTasks).toEqual([]);
     });
 
-    test('should return an empty array if an error occurs while reading tasks.json file', () => {
+    test('should return an empty array if an error occurs while reading test.json file', () => {
       // Симулюємо помилку під час читання файлу
       jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
         throw new Error('Mocked readFileSync error');
@@ -73,15 +73,15 @@ describe('TaskManager', () => {
   });
 
   describe('saveTasks', () => {
-    test('should save tasks to tasks.json file', () => {
+    test('should save tasks to test.json file', () => {
       // Додаємо задачу до TaskManager
       taskManager.addTask('Task 1', 'Description 1', '2023-05-20');
 
       // Зберігаємо задачі у файл
       taskManager.saveTasks();
 
-      // Зчитуємо вміст файлу tasks.json
-      const fileContent = fs.readFileSync('tasks.json', 'utf-8');
+      // Зчитуємо вміст файлу test.json
+      const fileContent = fs.readFileSync('test.json', 'utf-8');
 
       // Перевіряємо, що вміст файлу відповідає задачам TaskManager
       expect(JSON.parse(fileContent)).toEqual(taskManager.tasks);
