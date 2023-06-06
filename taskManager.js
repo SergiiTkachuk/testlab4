@@ -24,10 +24,11 @@ class TaskManager {
   listTasks() {
     console.log('All tasks:');
     this.tasks.forEach((task) => {
-      console.log(`- ${task.title} [${task.completed ? 'Completed' : 'Pending'}]`);
-      console.log(`  Description: ${task.description}`);
+      console.log(`  ID: ${task.id}`);
+      console.log(`  Title: ${task.title} [${task.completed ? 'Completed' : 'Pending'}]`);
+      console.log(`  Description: ${task.description || 'No description'}`);
       console.log(`  Deadline: ${task.deadline || 'No deadline'}`);
-      console.log(`  Completion Date: ${task.completionDate || 'Not completed'}`);
+      console.log(`  Completion Date: ${task.completionDate ||'Not completed'}`);
       console.log('----------------------------');
     });
   }
@@ -91,15 +92,17 @@ class TaskManager {
    
    console.log('Expired tasks:');
    expiredTasks.forEach((task) => {
-     console.log(`- ${task.title}`);
-     console.log(`  Description: ${task.description}`);
-     console.log(`  Deadline: ${task.deadline}`);
-     console.log('----------------------------');
+      console.log(`  ID: ${task.id}`);
+      console.log(`  Title: ${task.title}`);
+      console.log(`  Description: ${task.description}`);
+      console.log(`  Deadline: ${task.deadline}`);
+      console.log('----------------------------');
    });
  }
 
  showPendingTasks() {
-   const pendingTasks = this.tasks.filter((task) => !task.completed);
+   const tasksWithDeadline = this.tasks.filter((task) => task.hasOwnProperty('deadline'));
+   const pendingTasks = tasksWithDeadline.filter((task) => !task.completed);
    pendingTasks.sort((a, b) => {
      if (!a.deadline) return -1;
      if (!b.deadline) return 1;
@@ -108,8 +111,9 @@ class TaskManager {
 
    console.log('Pending tasks (sorted by deadline):');
    pendingTasks.forEach((task) => {
-     console.log(`- ${task.title}`);
-     console.log(`  Description: ${task.description}`);
+     console.log(`  ID: ${task.Id}`);
+     console.log(`  Title: ${task.title}`);
+     console.log(`  Description: ${task.description || 'No description'}`);
      console.log(`  Deadline: ${task.deadline}`);
      console.log('----------------------------');
    });
